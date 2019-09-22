@@ -22,6 +22,9 @@ var LOCATION_Y_MAX = 630;
 var PIN_WIDTH = 40;
 var PIN_HEIGHT = 40;
 
+// временно активируем карту
+var map = document.querySelector('.map').classList.remove('map--faded');
+
 // функция генерации случайных данных
 var getRandomValue = function (arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -60,12 +63,51 @@ var getRandomArr = function (arr) {
 // функция возвращающая локацию
 var getLocation = function () {
   var location = {};
-  var map = document.querySelector('.map');
+  map = document.querySelector('.map');
   var mapWidth = map.offsetWidth;
 
   location.x = getRandomInteger(0, mapWidth);
   location.y = getRandomInteger(LOCATION_Y_MIN, LOCATION_Y_MAX);
   return location;
+};
+
+// перевод типа жилья
+var getTranslateType = function (type) {
+  var translate;
+
+  if (type === 'palace') {
+    translate = 'Дворец';
+  } else if (type === 'flat') {
+    translate = 'Квартира';
+  } else if (type === 'house') {
+    translate = 'Дом';
+  } else {
+    translate = 'Бунгало';
+  }
+
+  return translate;
+};
+
+// получаем иконку feature
+var getFeatureIcon = function (obj) {
+  var htmlFeatures = '';
+
+  for (var i = 0; i < obj.length; i++) {
+    htmlFeatures += '<li class="popup__feature popup__feature--' + obj[i] + '"></li>';
+  }
+
+  return htmlFeatures;
+};
+
+// получаем картинки объявлений
+var getImages = function (obj) {
+  var htmlImg = '';
+
+  for (var i = 0; i < obj.length; i++) {
+    htmlImg += '<img src="' + obj[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
+  }
+
+  return htmlImg;
 };
 
 // функция генерации объявления
@@ -104,10 +146,7 @@ var createArrayAds = function () {
 
 var ads = createArrayAds();
 
-// временно активируем карту
-document.querySelector('.map').classList.remove('map--faded');
-
-// функция создания DOM-элемента на основе JS-объекта
+// функция создания DOM-элемента пина на основе JS-объекта
 var createDomElem = function (obj) {
   var similarAdTemplate = document
     .querySelector('#pin')
@@ -137,3 +176,23 @@ var renderAds = function () {
 };
 
 renderAds();
+
+// создание DOM-элемента объявления
+var createAdCard = function (obj) {
+  var adCard = document.querySelector('#card').content.querySelector('.map__card');
+  var adElement = adCard.cloneNode(true);
+
+  adElement.querySelector('.popup__title').textContent = obj.offer.title;
+  adElement.querySelector('.popup__text--address').textContent = obj.offer.address;
+  adElement.querySelector('.popup__text--price').textContent = obj.offer.price + ' ₽/ночь';
+  adElement.querySelector('.popup__type').textContent = getTranslateType(obj.offer.type);
+  adElement.querySelector('.popup__text--capacity').textContent = obj.offer.rooms + ' комнаты для ' + obj.offer.guests + ' гостей';
+  adElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + obj.offer.checkin + ', выезд до ' + obj.offer.checkout;
+  adElement.querySelector('.popup__features').innerHTML = getFeatureIcon(obj.offer.features);
+  adElement.querySelector('.popup__description').textContent = obj.offer.description;
+  adElement.querySelector('.popup__photos').innerHTML = getImages(obj.offer.photos);
+
+  return adElement;
+};
+
+map.appendChild(createAdCard(ads[0]));
