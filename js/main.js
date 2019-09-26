@@ -22,21 +22,33 @@ var LOCATION_Y_MAX = 630;
 var PIN_WIDTH = 40;
 var PIN_HEIGHT = 40;
 
-// временно активируем карту
-var map = document.querySelector('.map').classList.remove('map--faded');
+var map = document.querySelector('.map').classList.remove('map--faded'); // временно активируем карту
 
-// функция генерации случайных данных
+/**
+ * функция вывода случайных данных из массива
+ * @param {Array} arr - массив из которого выбираются данные
+ * @return {string | number} элемент массива
+ */
 var getRandomValue = function (arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 };
 
-// функция рандомного числа от min до max
+/**
+ * функция рандомного числа от min до max
+ * @param {Number} min - минимальное значение диапазона
+ * @param {Number} max - максимальное значение диапазона
+ * @return {Number} - возвращает рандомное число
+ */
 var getRandomInteger = function (min, max) {
   var rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
 };
 
-// функция перемешивания массива
+/**
+ * функция перемешивания массива
+ * @param {Array} arr - массив для перемешивания
+ * @return {Array} перемешанный массив
+ */
 var getShuffleArr = function (arr) {
   var copyArr = arr.slice();
   var newArr = [];
@@ -51,7 +63,11 @@ var getShuffleArr = function (arr) {
   return newArr;
 };
 
-// функция выдающая случайное кол-во элементов из массива
+/**
+ * функция выдающая случайное кол-во элементов из массива
+ * @param {Array} arr - исходный массив
+ * @return {Array} новый массив со случайными элементами от исходного
+ */
 var getRandomArr = function (arr) {
   var newArr = getShuffleArr(arr);
 
@@ -60,7 +76,10 @@ var getRandomArr = function (arr) {
   return newArr;
 };
 
-// функция возвращающая локацию
+/**
+ * функция для расчета локации объявления
+ * @return {Object} объект с двумя свойствами осей координат
+ */
 var getLocation = function () {
   var location = {};
   map = document.querySelector('.map');
@@ -71,7 +90,11 @@ var getLocation = function () {
   return location;
 };
 
-// перевод типа жилья
+/**
+ * перевод типа жилья на русский язык
+ * @param {string} type - строка соответствующая типу жилья
+ * @return {string} перевод на русский
+ */
 var getTranslateType = function (type) {
   var translate;
 
@@ -88,29 +111,41 @@ var getTranslateType = function (type) {
   return translate;
 };
 
-// получаем иконку feature
-var getFeatureIcon = function (obj) {
+/**
+ * получаем иконки features и встраиваем в разметку
+ * @param {Array} arr - Массив с фичами
+ * @return {string} строка для разметки
+ */
+var getFeatureIcon = function (arr) {
   var htmlFeatures = '';
 
-  for (var i = 0; i < obj.length; i++) {
-    htmlFeatures += '<li class="popup__feature popup__feature--' + obj[i] + '"></li>';
+  for (var i = 0; i < arr.length; i++) {
+    htmlFeatures += '<li class="popup__feature popup__feature--' + arr[i] + '"></li>';
   }
 
   return htmlFeatures;
 };
 
-// получаем картинки объявлений
-var getImages = function (obj) {
+/**
+ * получаем картинки объявлений и встраиваем в разметку
+ * @param {Array} arr - Массив с картинками
+ * @return {string} строка для разметки
+ */
+var getImages = function (arr) {
   var htmlImg = '';
 
-  for (var i = 0; i < obj.length; i++) {
-    htmlImg += '<img src="' + obj[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
+  for (var i = 0; i < arr.length; i++) {
+    htmlImg += '<img src="' + arr[i] + '" class="popup__photo" width="45" height="40" alt="Фотография жилья">';
   }
 
   return htmlImg;
 };
 
-// функция генерации объявления
+/**
+ * функция создания одного объявления
+ * @param {Number} i - порядковый индекс объявления
+ * @return {Object} объявление со всеми данными
+ */
 var generateAd = function (i) {
   var ad = {};
   ad.author = {avatar: 'img/avatars/user0' + i + '.png'};
@@ -133,7 +168,10 @@ var generateAd = function (i) {
   return ad;
 };
 
-// функция генерации массива сгенерированных JS объектов
+/**
+ * функция создания массива объявлений объектов
+ * @return {Array} массив с объектами объявлений
+ */
 var createArrayAds = function () {
   var adsArray = [];
 
@@ -146,7 +184,11 @@ var createArrayAds = function () {
 
 var ads = createArrayAds();
 
-// функция создания DOM-элемента пина на основе JS-объекта
+/**
+ * функция создания DOM-элемента пина на основе объекта объявления
+ * @param {Object} obj - объект объявления
+ * @return {Object} DOM элемент пина с координатами из свойств location
+ */
 var createDomElem = function (obj) {
   var similarAdTemplate = document
     .querySelector('#pin')
@@ -163,7 +205,10 @@ var createDomElem = function (obj) {
   return adElement;
 };
 
-// функция заполнения блока DOM-элементами на основе массива JS-объектов
+/**
+ * функция заполнения блока DOM-элементами на основе массива JS-объектов
+ * @description отрисовываем пины на карте
+ */
 var renderAds = function () {
   var mapPins = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
@@ -177,7 +222,11 @@ var renderAds = function () {
 
 renderAds();
 
-// создание DOM-элемента объявления
+/**
+ * создание DOM-элемента объявления
+ * @param {Object} obj - объект объявления из массива
+ * @return {Object} DOM элемент карточки объявления
+ */
 var createAdCard = function (obj) {
   var adCard = document.querySelector('#card').content.querySelector('.map__card');
   var adElement = adCard.cloneNode(true);
