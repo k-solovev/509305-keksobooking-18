@@ -21,8 +21,11 @@ var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 var PIN_WIDTH = 40;
 var PIN_HEIGHT = 40;
-
-var map = document.querySelector('.map').classList.remove('map--faded'); // временно активируем карту
+var ENTER_KEY_CODE = 13;
+var map = document.querySelector('.map');
+var adForm = document.querySelector('.ad-form');
+var LOCATION_X_MAX = map.offsetWidth;
+var LOCATION_X_MIN = 0;
 
 /**
  * функция вывода случайных данных из массива
@@ -82,10 +85,8 @@ var getRandomArr = function (arr) {
  */
 var getLocation = function () {
   var location = {};
-  map = document.querySelector('.map');
-  var mapWidth = map.offsetWidth;
 
-  location.x = getRandomInteger(0, mapWidth);
+  location.x = getRandomInteger(0, LOCATION_X_MAX);
   location.y = getRandomInteger(LOCATION_Y_MIN, LOCATION_Y_MAX);
   return location;
 };
@@ -98,14 +99,19 @@ var getLocation = function () {
 var getTranslateType = function (type) {
   var translate;
 
-  if (type === 'palace') {
-    translate = 'Дворец';
-  } else if (type === 'flat') {
-    translate = 'Квартира';
-  } else if (type === 'house') {
-    translate = 'Дом';
-  } else {
-    translate = 'Бунгало';
+  switch (type) {
+    case 'palace':
+      translate = 'Дворец';
+      break;
+    case 'flat':
+      translate = 'Квартира';
+      break;
+    case 'house':
+      translate = 'Дом';
+      break;
+    case 'bungalo':
+      translate = 'Бунгало';
+      break;
   }
 
   return translate;
@@ -245,3 +251,144 @@ var createAdCard = function (obj) {
 };
 
 map.appendChild(createAdCard(ads[0]));
+
+var inputs = document.querySelectorAll('input');
+var selects = document.querySelectorAll('select');
+
+/**
+ * добавление атрибута disabled полям input/select
+ * @param {Array} collInp - коллекция инпутов
+ * @param {Array} collSel - коллекция селектов
+ */
+var addDisabled = function (collInp, collSel) {
+  for (var i = 0; i < collInp.length; i++) {
+    collInp[i].setAttribute('disabled', 'disabled');
+  }
+  for (i = 0; i < collSel.length; i++) {
+    collSel[i].setAttribute('disabled', 'disabled');
+  }
+};
+
+addDisabled(inputs, selects);
+
+/**
+ *
+ * @param {Array} collInp - коллекция инпутов
+ * @param {Array} collSel - коллекция селектов
+ */
+var removeDisabled = function (collInp, collSel) {
+  for (var i = 0; i < collInp.length; i++) {
+    collInp[i].removeAttribute('disabled', 'disabled');
+  }
+  for (i = 0; i < collSel.length; i++) {
+    collSel[i].removeAttribute('disabled', 'disabled');
+  }
+};
+
+/**
+ * функция для активации состояний полей форм
+ */
+var activeState = function () {
+  removeDisabled(inputs, selects);
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+};
+
+var mainPin = map.querySelector('.map__pin--main');
+
+/**
+ * обработчики активации форм нажатия и клика на главный пин
+ */
+mainPin.addEventListener('mousedown', function () {
+  activeState();
+  getCoordinatePin();
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEY_CODE) {
+    activeState();
+    getCoordinatePin();
+  }
+});
+
+/**
+ * блок расчета координат для поля адрес
+ */
+var addressInput = document.querySelector('#address');
+var MAIN_PIN_START_X = 570;
+var MAIN_PIN_START_Y = 375;
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
+var PIN_TAIL_HEIGHT = 22;
+
+// стартовое значение пина
+addressInput.setAttribute('value', Math.floor(MAIN_PIN_START_X + MAIN_PIN_WIDTH / 2) + ', ' + Math.floor(MAIN_PIN_START_Y + MAIN_PIN_HEIGHT / 2));
+
+/**
+ * @property {string} x - содержит св-во left исключая "px"
+ * @property {string} y - содержит св-во top исключая "px"
+ * @description обновляет строку с координатами и записывает ее в инпут адрес
+ */
+var getCoordinatePin = function () {
+  var x = mainPin.style.left.slice(0, -2);
+  var y = mainPin.style.top.slice(0, -2);
+  x = Math.floor(+x + MAIN_PIN_WIDTH / 2);
+  y = Math.floor(+y + MAIN_PIN_HEIGHT + PIN_TAIL_HEIGHT);
+
+  if (y > LOCATION_Y_MAX) {
+    y = LOCATION_Y_MAX;
+  } if (y < LOCATION_Y_MIN) {
+    y = LOCATION_Y_MIN;
+  } if (x > LOCATION_X_MAX) {
+    x = LOCATION_X_MAX;
+  } if (x < LOCATION_X_MIN) {
+    x = LOCATION_X_MIN;
+  }
+
+  addressInput.value = x + ', ' + y;
+};
+
+var inpCapacity = adForm.querySelector('#capacity');
+var capacityOptions = inpCapacity.querySelectorAll('option');
+var inpRooms = adForm.querySelector('#room_number');
+
+/**
+ * проверка валидности поля гостей к полю комнаты
+ * @description доступные поля:
+ * 1 комната — «для 1 гостя»;
+ * 2 комнаты — «для 2 гостей» или «для 1 гостя»;
+ * 3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»;
+ * 100 комнат — «не для гостей».
+ * проходит по коллекции опции гостей и переключает атрибуты disable
+ */
+var selectGuestsChangeValidator = function () {
+  switch (+inpRooms.value) {
+    case 1:
+      for (var i = 0; i < capacityOptions.length; i++) {
+        capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '2' || capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
+      }
+      break;
+    case 2:
+      for (i = 0; i < capacityOptions.length; i++) {
+        capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
+      }
+      break;
+    case 3:
+      for (i = 0; i < capacityOptions.length; i++) {
+        capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '0');
+      }
+      break;
+    case 100:
+      for (i = 0; i < capacityOptions.length; i++) {
+        capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '1' || capacityOptions[i].value === '2' || capacityOptions[i].value === '3');
+      }
+      break;
+  }
+};
+
+/**
+ *событие на селекте поля комнат
+ */
+inpRooms.addEventListener('change', function () {
+  selectGuestsChangeValidator();
+});
