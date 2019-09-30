@@ -22,6 +22,7 @@ var LOCATION_Y_MAX = 630;
 var PIN_WIDTH = 40;
 var PIN_HEIGHT = 40;
 var ENTER_KEY_CODE = 13;
+var ESC_KEY_CODE = 27;
 var map = document.querySelector('.map');
 var adForm = document.querySelector('.ad-form');
 var LOCATION_X_MAX = map.offsetWidth;
@@ -212,11 +213,11 @@ var createDomElem = function (obj) {
 };
 
 /**
- * функция заполнения блока DOM-элементами на основе массива JS-объектов
+ * функция заполнения DOM-элементами на основе массива JS-объектов
  * @description отрисовываем пины на карте
  */
+var mapPins = document.querySelector('.map__pins');
 var renderAds = function () {
-  var mapPins = document.querySelector('.map__pins');
   var fragment = document.createDocumentFragment();
 
   for (var i = 0; i < ads.length; i++) {
@@ -237,6 +238,8 @@ var createAdCard = function (obj) {
   var adCard = document.querySelector('#card').content.querySelector('.map__card');
   var adElement = adCard.cloneNode(true);
 
+
+  adElement.querySelector('.popup__avatar').src = obj.author.avatar;
   adElement.querySelector('.popup__title').textContent = obj.offer.title;
   adElement.querySelector('.popup__text--address').textContent = obj.offer.address;
   adElement.querySelector('.popup__text--price').textContent = obj.offer.price + ' ₽/ночь';
@@ -249,8 +252,6 @@ var createAdCard = function (obj) {
 
   return adElement;
 };
-
-map.appendChild(createAdCard(ads[0]));
 
 var inputs = document.querySelectorAll('input');
 var selects = document.querySelectorAll('select');
@@ -391,4 +392,142 @@ var selectGuestsChangeValidator = function () {
  */
 inpRooms.addEventListener('change', function () {
   selectGuestsChangeValidator();
+});
+
+/**
+ * закрытие модалки объявления
+ */
+var closeModalAd = function () {
+  var modal = map.querySelector('.map__card');
+  if (map.contains(modal)) {
+    map.removeChild(modal);
+  }
+};
+
+/**
+ *
+ * @param {Object} elem - индекс объекта в массиве объектов объявлений
+ */
+var openModalAd = function (elem) {
+  map.appendChild(createAdCard(ads[elem]));
+};
+
+/**
+ * показ модальных окон объявлений при нажатии
+ */
+var pinButtonsArray = Array.from(mapPins.querySelectorAll('.map__pin[type="button"]'));
+var pinImgArray = Array.from(mapPins.querySelectorAll('.map__pin[type="button"] img'));
+
+mapPins.addEventListener('click', function (evt) {
+  if (evt.target.matches('.map__pin[type=button]')) {
+    closeModalAd();
+    openModalAd(pinButtonsArray.indexOf(evt.target));
+  }
+  if (evt.target.matches('.map__pin[type=button] img')) {
+    closeModalAd();
+    openModalAd(pinImgArray.indexOf(evt.target));
+  }
+});
+
+/**
+* закрытие модального окна объявления по клику
+*/
+document.addEventListener('click', function (evt) {
+  if (evt.target.matches('.popup__close')) {
+    closeModalAd();
+  }
+});
+
+/**
+ * показ модальных окон объявлений при enter
+ */
+var adBtn = map.querySelector('.map__pin[type="button"]');
+
+adBtn.addEventListener('keydown', function (evt) {
+  if (evt.keydown === ENTER_KEY_CODE) {
+    closeModalAd();
+    openModalAd(pinButtonsArray.indexOf(evt.target));
+  }
+});
+
+/**
+* закрытие модального окна объявления по esc
+*/
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ESC_KEY_CODE) {
+    closeModalAd();
+  }
+});
+
+/**
+ * проверка валидности поля типа жилья и минимальной цены
+ * @description доступные поля:
+ *«Бунгало» — минимальная цена за ночь 0;
+ *«Квартира» — минимальная цена за ночь 1000;
+ *«Дом» — минимальная цена 5000;
+ *«Дворец» — минимальная цена 10000.
+ */
+var inpPrice = adForm.querySelector('#price');
+
+var selectTypeOfHousesChangeValidator = function () {
+  switch (inpTypeOfHouses.value) {
+    case 'bungalo':
+      inpPrice.setAttribute('min', 0);
+      inpPrice.setAttribute('placeholder', '0');
+      break;
+    case 'flat':
+      inpPrice.setAttribute('min', 1000);
+      inpPrice.setAttribute('placeholder', '1000');
+      break;
+    case 'house':
+      inpPrice.setAttribute('min', 5000);
+      inpPrice.setAttribute('placeholder', '5000');
+      break;
+    case 'palace':
+      inpPrice.setAttribute('min', 10000);
+      inpPrice.setAttribute('placeholder', '10000');
+      break;
+  }
+};
+
+/**
+ * событие на селекте типа жилья
+ */
+var inpTypeOfHouses = adForm.querySelector('#type');
+
+inpTypeOfHouses.addEventListener('change', function () {
+  selectTypeOfHousesChangeValidator();
+});
+
+/**
+ * синхронизация полей времени заезда/выезда
+ */
+var timeIn = adForm.querySelector('#timein');
+var timeOut = adForm.querySelector('#timeout');
+
+/**
+ * обработчик валидации
+ * @param {Object} timeX - проверяемое время
+ * @param {Object} timeY - время которое синхронизируется с проверяемым
+ */
+var selectChangeTimeValidation = function (timeX, timeY) {
+  switch (timeX.value) {
+    case '12:00':
+      timeY.value = '12:00';
+      break;
+    case '13:00':
+      timeY.value = '13:00';
+      break;
+    case '14:00':
+      timeY.value = '14:00';
+      break;
+  }
+};
+
+timeIn.addEventListener('change', function () {
+  selectChangeTimeValidation(timeIn, timeOut);
+});
+
+timeOut.addEventListener('change', function () {
+  selectChangeTimeValidation(timeOut, timeIn);
 });
