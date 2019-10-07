@@ -6,6 +6,7 @@
   var mapPins = document.querySelector('.map__pins');
   var ENTER_KEY_CODE = 13;
   var ESC_KEY_CODE = 27;
+  var pinHandler = map.querySelector('.map__pin--main');
 
   /**
    * функция заполнения DOM-элементами на основе массива JS-объектов
@@ -101,6 +102,65 @@
     if (evt.keyCode === ESC_KEY_CODE) {
       closeModalAd();
     }
+  });
+
+
+  /**
+   * обработчик перетаскивания пина
+   */
+  pinHandler.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    // startCoords.x = Math.floor(+startCoords.x + window.form.MAIN_PIN_WIDTH / 2);
+    // startCoords.y = Math.floor(+startCoords.y + window.form.MAIN_PIN_HEIGHT + window.form.PIN_TAIL_HEIGHT);
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      pinHandler.style.top = (pinHandler.offsetTop - shift.y) + 'px';
+      pinHandler.style.left = (pinHandler.offsetLeft - shift.x) + 'px';
+      window.form.setCoordinatePin();
+
+      var LOCATION_X_MIN = Math.floor(window.data.LOCATION_X_MIN - window.form.MAIN_PIN_WIDTH / 2);
+      var LOCATION_X_MAX = Math.floor(window.data.LOCATION_X_MAX - window.form.MAIN_PIN_WIDTH / 2);
+      var LOCATION_Y_MAX = Math.floor(window.data.LOCATION_Y_MAX - window.form.MAIN_PIN_HEIGHT - window.form.PIN_TAIL_HEIGHT);
+      var LOCATION_Y_MIN = Math.floor(window.data.LOCATION_Y_MIN - window.form.MAIN_PIN_HEIGHT - window.form.PIN_TAIL_HEIGHT);
+
+      if (pinHandler.offsetTop - shift.y > LOCATION_Y_MAX) {
+        pinHandler.style.top = LOCATION_Y_MAX + 'px';
+      } if (pinHandler.offsetTop - shift.y < LOCATION_Y_MIN) {
+        pinHandler.style.top = LOCATION_Y_MIN + 'px';
+      } if (pinHandler.offsetLeft > LOCATION_X_MAX) {
+        pinHandler.style.left = LOCATION_X_MAX + 'px';
+      } if (pinHandler.offsetLeft < LOCATION_X_MIN) {
+        pinHandler.style.left = LOCATION_X_MIN + 'px';
+      }
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 
   window.map = {
