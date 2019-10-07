@@ -17,6 +17,7 @@
   var inpTypeOfHouses = adForm.querySelector('#type');
   var timeIn = adForm.querySelector('#timein');
   var timeOut = adForm.querySelector('#timeout');
+  // var resetBtn = adForm.querySelector('.ad-form__reset');
 
   /**
    * добавление атрибута disabled полям input/select
@@ -190,6 +191,9 @@
 
   window.form = {
     activeState: activeState,
-    setCoordinatePin: setCoordinatePin
+    setCoordinatePin: setCoordinatePin,
+    MAIN_PIN_HEIGHT: MAIN_PIN_HEIGHT,
+    MAIN_PIN_WIDTH: MAIN_PIN_WIDTH,
+    PIN_TAIL_HEIGHT: PIN_TAIL_HEIGHT
   };
 })();
