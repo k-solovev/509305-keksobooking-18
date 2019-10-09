@@ -116,9 +116,6 @@
       y: evt.clientY
     };
 
-    // startCoords.x = Math.floor(+startCoords.x + window.form.MAIN_PIN_WIDTH / 2);
-    // startCoords.y = Math.floor(+startCoords.y + window.form.MAIN_PIN_HEIGHT + window.form.PIN_TAIL_HEIGHT);
-
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
