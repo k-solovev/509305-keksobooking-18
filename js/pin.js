@@ -22,6 +22,15 @@
       'px';
     adElement.querySelector('img').src = obj.author.avatar;
     adElement.querySelector('img').alt = obj.offer.title;
+
+    adElement.addEventListener('click', function () {
+      var modal = window.map.map.querySelector('.map__card');
+      if (window.map.map.contains(modal)) {
+        window.map.map.removeChild(modal);
+      }
+      window.map.map.appendChild(window.card.createAdCard(obj));
+    });
+
     return adElement;
   };
 

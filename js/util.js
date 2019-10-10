@@ -53,10 +53,27 @@
     return newArr;
   };
 
+  /**
+  * обработчик ошибки загрузки данных с сервера
+  */
+  var errorHandler = function () {
+    var errorTemplate = document.querySelector('#error').content.querySelector('.error');
+    var errorElem = errorTemplate.cloneNode(true);
+    var mainElem = document.querySelector('main');
+    var errBtn = errorElem.querySelector('.error__button');
+    mainElem.appendChild(errorElem);
+
+    errBtn.addEventListener('click', function () {
+      mainElem.removeChild(errorElem);
+      window.map.loadServerData();
+    });
+  };
+
   window.util = {
     getRandomValue: getRandomValue,
     getRandomInteger: getRandomInteger,
     getShuffleArr: getShuffleArr,
-    getRandomArr: getRandomArr
+    getRandomArr: getRandomArr,
+    errorHandler: errorHandler
   };
 })();
