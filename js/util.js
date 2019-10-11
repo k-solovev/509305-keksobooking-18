@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var mainElem = document.querySelector('main');
+
   /**
  * функция вывода случайных данных из массива
  * @param {Array} arr - массив из которого выбираются данные
@@ -54,18 +56,47 @@
   };
 
   /**
-  * обработчик ошибки загрузки данных с сервера
+  * показ сообщения ошибки загрузки данных с сервера
   */
   var errorHandler = function () {
     var errorTemplate = document.querySelector('#error').content.querySelector('.error');
     var errorElem = errorTemplate.cloneNode(true);
-    var mainElem = document.querySelector('main');
     var errBtn = errorElem.querySelector('.error__button');
     mainElem.appendChild(errorElem);
 
     errBtn.addEventListener('click', function () {
       mainElem.removeChild(errorElem);
       window.map.loadServerData();
+    });
+
+    document.addEventListener('click', function () {
+      if (mainElem.contains(errorElem)) {
+        mainElem.removeChild(errorElem);
+      }
+    });
+
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.map.ESC_KEY_CODE && mainElem.contains(errorElem)) {
+        mainElem.removeChild(errorElem);
+      }
+    });
+  };
+
+  var successHandler = function () {
+    var successTemplate = document.querySelector('#success').content.querySelector('.success');
+    var successElem = successTemplate.cloneNode(true);
+    mainElem.appendChild(successElem);
+
+    document.addEventListener('click', function () {
+      if (mainElem.contains(successElem)) {
+        mainElem.removeChild(successElem);
+      }
+    });
+
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === window.map.ESC_KEY_CODE && mainElem.contains(successElem)) {
+        mainElem.removeChild(successElem);
+      }
     });
   };
 
@@ -74,6 +105,7 @@
     getRandomInteger: getRandomInteger,
     getShuffleArr: getShuffleArr,
     getRandomArr: getRandomArr,
-    errorHandler: errorHandler
+    errorHandler: errorHandler,
+    successHandler: successHandler
   };
 })();
