@@ -12,7 +12,7 @@
    * обработчик успеха для загрузки данных с сервера
    * @param {*} data - загруженные данные с сервера
    */
-  var successHandler = function (data) {
+  var successLoadHandler = function (data) {
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < data.length; i++) {
@@ -26,7 +26,7 @@
    * загрузка данных с сервера
    */
   var loadServerData = function () {
-    window.backend.load(successHandler, window.util.errorHandler);
+    window.backend.load(successLoadHandler, window.util.errorHandler);
   };
 
   /**
@@ -133,6 +133,8 @@
   window.map = {
     map: map,
     mainPin: mainPin,
-    loadServerData: loadServerData
+    loadServerData: loadServerData,
+    closeModalAd: closeModalAd,
+    ESC_KEY_CODE: ESC_KEY_CODE
   };
 })();

@@ -17,7 +17,6 @@
   var inpTypeOfHouses = adForm.querySelector('#type');
   var timeIn = adForm.querySelector('#timein');
   var timeOut = adForm.querySelector('#timeout');
-  // var resetBtn = adForm.querySelector('.ad-form__reset');
 
   /**
    * добавление атрибута disabled полям input/select
@@ -188,6 +187,28 @@
   timeOut.addEventListener('change', function () {
     selectChangeTimeValidation(timeOut, timeIn);
   });
+
+  /**
+   * @param {Event} evt - параметр event
+   * событие успеха на отправке формы
+   * очистка полей
+   * удаление метки похожих объявлений и карточки активного объявления
+   * метка адреса возвращается в исходное положение, корректируются координаты, отображаемые в поле «Адрес»
+   * Показ сообщения об успешной отправке формы
+   */
+  var successUploadHandler = function (evt) {
+    window.backend.upload(new FormData(adForm), function () {
+      adForm.reset();
+      window.map.closeModalAd();
+      window.map.mainPin.style.top = MAIN_PIN_START_Y + 'px';
+      window.map.mainPin.style.left = MAIN_PIN_START_X + 'px';
+      setCoordinatePin();
+      window.util.successHandler();
+    }, window.util.errorHandler);
+    evt.preventDefault();
+  };
+
+  adForm.addEventListener('submit', successUploadHandler, window.util.errorHandler);
 
   window.form = {
     activeState: activeState,
