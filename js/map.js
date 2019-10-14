@@ -7,15 +7,17 @@
   var ESC_KEY_CODE = 27;
   var pinHandler = map.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
+  var PINS_COUNT = 5;
 
   /**
    * обработчик успеха для загрузки данных с сервера
    * @param {*} data - загруженные данные с сервера
    */
   var successLoadHandler = function (data) {
+    window.dataLoad = data;
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < PINS_COUNT; i++) {
       fragment.appendChild(window.pin.createPinElem(data[i]));
     }
 
@@ -33,13 +35,15 @@
    * обработчики активации формы нажатия и клика на главный пин
    */
   mainPin.addEventListener('mousedown', function () {
-    window.form.activeState();
-    window.form.setCoordinatePin();
-    loadServerData();
+    if (map.classList.contains('map--faded')) {
+      window.form.activeState();
+      window.form.setCoordinatePin();
+      loadServerData();
+    }
   });
 
   mainPin.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEY_CODE) {
+    if (evt.keyCode === ENTER_KEY_CODE && map.classList.contains('map--faded')) {
       window.form.activeState();
       window.form.setCoordinatePin();
       loadServerData();
@@ -135,6 +139,7 @@
     mainPin: mainPin,
     loadServerData: loadServerData,
     closeModalAd: closeModalAd,
-    ESC_KEY_CODE: ESC_KEY_CODE
+    ESC_KEY_CODE: ESC_KEY_CODE,
+    PINS_COUNT: PINS_COUNT
   };
 })();
