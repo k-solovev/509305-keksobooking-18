@@ -4,6 +4,7 @@
   var URL_GET = 'https://js.dump.academy/keksobooking/data';
   var URL_POST = 'https://js.dump.academy/keksobooking';
   var STATUS_SUCCESS = 200;
+  var TIMEOUT = 5000;
 
   /**
    * загрузка данных с сервера
@@ -21,6 +22,14 @@
         loadError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
+    xhr.addEventListener('error', function () {
+      loadError('Произошла ошибка соединения');
+    });
+    xhr.addEventListener('timeout', function () {
+      loadError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+    });
+
+    xhr.timeout = TIMEOUT;
     xhr.open('GET', URL_GET);
     xhr.send();
   };

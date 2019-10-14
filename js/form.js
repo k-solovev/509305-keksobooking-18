@@ -24,12 +24,18 @@
    * @param {Array} collSel - коллекция селектов
   */
   var addDisabled = function (collInp, collSel) {
-    for (var i = 0; i < collInp.length; i++) {
-      collInp[i].setAttribute('disabled', 'disabled');
-    }
-    for (i = 0; i < collSel.length; i++) {
-      collSel[i].setAttribute('disabled', 'disabled');
-    }
+    collInp.forEach(function (elem) {
+      elem.setAttribute('disabled', 'disabled');
+    });
+    collSel.forEach(function (elem) {
+      elem.setAttribute('disabled', 'disabled');
+    });
+    // for (var i = 0; i < collInp.length; i++) {
+    //   collInp[i].setAttribute('disabled', 'disabled');
+    // }
+    // for (i = 0; i < collSel.length; i++) {
+    //   collSel[i].setAttribute('disabled', 'disabled');
+    // }
   };
 
   addDisabled(inputs, selects);
@@ -40,12 +46,18 @@
    * @param {Array} collSel - коллекция селектов
    */
   var removeDisabled = function (collInp, collSel) {
-    for (var i = 0; i < collInp.length; i++) {
-      collInp[i].removeAttribute('disabled', 'disabled');
-    }
-    for (i = 0; i < collSel.length; i++) {
-      collSel[i].removeAttribute('disabled', 'disabled');
-    }
+    collInp.forEach(function (elem) {
+      elem.removeAttribute('disabled', 'disabled');
+    });
+    collSel.forEach(function (elem) {
+      elem.removeAttribute('disabled', 'disabled');
+    });
+    // for (var i = 0; i < collInp.length; i++) {
+    //   collInp[i].removeAttribute('disabled', 'disabled');
+    // }
+    // for (i = 0; i < collSel.length; i++) {
+    //   collSel[i].removeAttribute('disabled', 'disabled');
+    // }
   };
 
   /**
@@ -84,6 +96,12 @@
     addressInput.value = x + ', ' + y;
   };
 
+  var removeSelectedAttribute = function (arr) {
+    arr.forEach(function (elem) {
+      elem.setAttribute('selected', 'false');
+    });
+  };
+
   /**
    * проверка валидности поля гостей к полю комнаты
    * @description доступные поля:
@@ -96,24 +114,44 @@
   var selectGuestsChangeValidator = function () {
     switch (+inpRooms.value) {
       case 1:
-        for (var i = 0; i < capacityOptions.length; i++) {
-          capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '2' || capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
-        }
+        removeSelectedAttribute(capacityOptions);
+        capacityOptions.forEach(function (elem) {
+          elem.toggleAttribute('disabled', elem.value === '2' || elem.value === '3' || elem.value === '0');
+        });
+        inpCapacity[2].setAttribute('selected', true);
+        // for (var i = 0; i < capacityOptions.length; i++) {
+        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '2' || capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
+        // }
         break;
       case 2:
-        for (i = 0; i < capacityOptions.length; i++) {
-          capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
-        }
+        removeSelectedAttribute(capacityOptions);
+        capacityOptions.forEach(function (elem) {
+          elem.toggleAttribute('disabled', elem.value === '3' || elem.value === '0');
+        });
+        inpCapacity[2].setAttribute('selected', true);
+        // for (i = 0; i < capacityOptions.length; i++) {
+        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
+        // }
         break;
       case 3:
-        for (i = 0; i < capacityOptions.length; i++) {
-          capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '0');
-        }
+        removeSelectedAttribute(capacityOptions);
+        capacityOptions.forEach(function (elem) {
+          elem.toggleAttribute('disabled', elem.value === '0');
+        });
+        inpCapacity[2].setAttribute('selected', true);
+        // for (i = 0; i < capacityOptions.length; i++) {
+        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '0');
+        // }
         break;
       case 100:
-        for (i = 0; i < capacityOptions.length; i++) {
-          capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '1' || capacityOptions[i].value === '2' || capacityOptions[i].value === '3');
-        }
+        removeSelectedAttribute(capacityOptions);
+        capacityOptions.forEach(function (elem) {
+          elem.toggleAttribute('disabled', elem.value === '1' || elem.value === '2' || elem.value === '3');
+        });
+        inpCapacity[3].setAttribute('selected', true);
+        // for (i = 0; i < capacityOptions.length; i++) {
+        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '1' || capacityOptions[i].value === '2' || capacityOptions[i].value === '3');
+        // }
         break;
     }
   };
@@ -199,6 +237,7 @@
   var successUploadHandler = function (evt) {
     window.backend.upload(new FormData(adForm), function () {
       adForm.reset();
+      inpPrice.placeholder = 0;
       window.map.closeModalAd();
       window.map.mainPin.style.top = MAIN_PIN_START_Y + 'px';
       window.map.mainPin.style.left = MAIN_PIN_START_X + 'px';
