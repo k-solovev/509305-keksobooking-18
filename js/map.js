@@ -6,8 +6,23 @@
   var ENTER_KEY_CODE = 13;
   var ESC_KEY_CODE = 27;
   var pinHandler = map.querySelector('.map__pin--main');
-  var mapPins = document.querySelector('.map__pins');
-  var PINS_COUNT = 5;
+
+  /**
+   * отрисовка не более 5 пинов на карте по заданному массиву
+   * @param {Array} data
+   */
+  var renderPins = function (data) {
+    var MAX_PINS_COUNT = 5;
+    var mapPins = document.querySelector('.map__pins');
+    var fragment = document.createDocumentFragment();
+    var pinsCount = (data.length > MAX_PINS_COUNT) ? MAX_PINS_COUNT : data.length;
+
+    for (var i = 0; i < pinsCount; i++) {
+      fragment.appendChild(window.pin.createPinElem(data[i]));
+    }
+
+    mapPins.appendChild(fragment);
+  };
 
   /**
    * обработчик успеха для загрузки данных с сервера
@@ -15,13 +30,14 @@
    */
   var successLoadHandler = function (data) {
     window.dataLoad = data;
-    var fragment = document.createDocumentFragment();
+    renderPins(data);
+    // var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < PINS_COUNT; i++) {
-      fragment.appendChild(window.pin.createPinElem(data[i]));
-    }
+    // for (var i = 0; i < PINS_COUNT; i++) {
+    //   fragment.appendChild(window.pin.createPinElem(data[i]));
+    // }
 
-    mapPins.appendChild(fragment);
+    // mapPins.appendChild(fragment);
   };
 
   /**
@@ -140,6 +156,6 @@
     loadServerData: loadServerData,
     closeModalAd: closeModalAd,
     ESC_KEY_CODE: ESC_KEY_CODE,
-    PINS_COUNT: PINS_COUNT
+    renderPins: renderPins
   };
 })();
