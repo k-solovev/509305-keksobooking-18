@@ -110,7 +110,7 @@
    * обработчик события изменения фильтров
    * копируем полученный с сервера массив, фильтруем его, удаляем пины, отрисовываем по отфильтрованному массиву
    */
-  var onFilterChange = function () {
+  var onFilterChange = window.debounce(function () {
     var arr = window.dataLoad.slice();
     filteredArr = arr.filter(housingTypeSort)
     .filter(housingPriceSort)
@@ -119,8 +119,8 @@
     .filter(housingFeaturesSort);
 
     deletePins();
-    window.debounce(window.map.renderPins(filteredArr));
-  };
+    window.map.renderPins(filteredArr);
+  });
 
   mapFilters.addEventListener('change', onFilterChange);
 })();

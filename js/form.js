@@ -17,6 +17,11 @@
   var inpTypeOfHouses = adForm.querySelector('#type');
   var timeIn = adForm.querySelector('#timein');
   var timeOut = adForm.querySelector('#timeout');
+  var avatarChooser = adForm.querySelector('.ad-form-header__input[type=file]');
+  var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
+
+  var picChooser = adForm.querySelector('.ad-form__input[type=file]');
+  var picPreview = adForm.querySelector('.ad-form__photo img');
 
   /**
    * добавление атрибута disabled полям input/select
@@ -247,7 +252,24 @@
     evt.preventDefault();
   };
 
+  /**
+   * обработчик отправки формы
+   */
   adForm.addEventListener('submit', successUploadHandler, window.util.errorHandler);
+
+  /**
+   * обработчик добавления аватара
+   */
+  avatarChooser.addEventListener('change', function () {
+    window.inputFiles.inpImgHandler(avatarChooser, avatarPreview);
+  });
+
+  /**
+   * обработчик добавления фотографии жилья
+   */
+  picChooser.addEventListener('change', function () {
+    window.inputFiles.inpImgHandler(picChooser, picPreview);
+  });
 
   window.form = {
     activeState: activeState,
