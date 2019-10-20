@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
-  var URL_GET = 'https://js.dump.academy/keksobooking/data';
-  var URL_POST = 'https://js.dump.academy/keksobooking';
+  var Url = {
+    GET: 'https://js.dump.academy/keksobooking/data',
+    POST: 'https://js.dump.academy/keksobooking'
+  };
   var STATUS_SUCCESS = 200;
   var TIMEOUT = 5000;
 
@@ -30,7 +32,7 @@
     });
 
     xhr.timeout = TIMEOUT;
-    xhr.open('GET', URL_GET);
+    xhr.open('GET', Url.GET);
     xhr.send();
   };
 
@@ -45,7 +47,7 @@
         loadError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
       }
     });
-    xhr.open('POST', URL_POST);
+    xhr.open('POST', Url.POST);
     xhr.send(data);
   };
 

@@ -1,10 +1,13 @@
 'use strict';
 
 (function () {
-  var inputs = document.querySelectorAll('input');
-  var selects = document.querySelectorAll('select');
   var adForm = document.querySelector('.ad-form');
-  var addressInput = document.querySelector('#address');
+  var inputs = adForm.querySelectorAll('input');
+  var selects = adForm.querySelectorAll('select');
+  var description = adForm.querySelector('#description');
+  var submitBtn = adForm.querySelector('.ad-form__submit');
+  var resetBtn = adForm.querySelector('.ad-form__reset');
+  var addressInput = adForm.querySelector('#address');
   var MAIN_PIN_START_X = 570;
   var MAIN_PIN_START_Y = 375;
   var MAIN_PIN_WIDTH = 65;
@@ -35,15 +38,10 @@
     collSel.forEach(function (elem) {
       elem.setAttribute('disabled', 'disabled');
     });
-    // for (var i = 0; i < collInp.length; i++) {
-    //   collInp[i].setAttribute('disabled', 'disabled');
-    // }
-    // for (i = 0; i < collSel.length; i++) {
-    //   collSel[i].setAttribute('disabled', 'disabled');
-    // }
+    description.setAttribute('disabled', 'disabled');
+    submitBtn.setAttribute('disabled', 'disabled');
+    resetBtn.setAttribute('disabled', 'disabled');
   };
-
-  addDisabled(inputs, selects);
 
   /**
    * удаление атрибута disabled полям input/select
@@ -57,21 +55,6 @@
     collSel.forEach(function (elem) {
       elem.removeAttribute('disabled', 'disabled');
     });
-    // for (var i = 0; i < collInp.length; i++) {
-    //   collInp[i].removeAttribute('disabled', 'disabled');
-    // }
-    // for (i = 0; i < collSel.length; i++) {
-    //   collSel[i].removeAttribute('disabled', 'disabled');
-    // }
-  };
-
-  /**
-   * функция обработчик для активации состояний полей форм
-   */
-  var activeState = function () {
-    removeDisabled(inputs, selects);
-    window.map.map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
   };
 
   // стартовое значение пина
@@ -92,6 +75,7 @@
       y = window.data.LOCATION_Y_MAX;
     } if (y < window.data.LOCATION_Y_MIN) {
       y = window.data.LOCATION_Y_MIN;
+
     } if (x > window.data.LOCATION_X_MAX) {
       x = window.data.LOCATION_X_MAX;
     } if (x < window.data.LOCATION_X_MIN) {
@@ -101,9 +85,38 @@
     addressInput.value = x + ', ' + y;
   };
 
+  /**
+   * активация страницы
+   */
+  var activeState = function () {
+    removeDisabled(inputs, selects);
+    window.map.map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+  };
+
+  /**
+   * деактивация страницы
+   */
+  var deactiveState = function () {
+    adForm.reset();
+    addDisabled(inputs, selects);
+    inpPrice.placeholder = 0;
+    window.map.closeModalAd();
+    window.map.mainPin.style.top = MAIN_PIN_START_Y + 'px';
+    window.map.mainPin.style.left = MAIN_PIN_START_X + 'px';
+    setCoordinatePin();
+    window.filter.filterReset();
+  };
+
+  deactiveState();
+
+  /**
+   * удаление атрибутов selected
+   * @param {*} arr - входящий массив
+   */
   var removeSelectedAttribute = function (arr) {
     arr.forEach(function (elem) {
-      elem.setAttribute('selected', 'false');
+      elem.removeAttribute('selected');
     });
   };
 
@@ -113,8 +126,7 @@
    * 1 комната — «для 1 гостя»;
    * 2 комнаты — «для 2 гостей» или «для 1 гостя»;
    * 3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»;
-   * 100 комнат — «не для гостей».
-   * проходит по коллекции опции гостей и переключает атрибуты disable
+   * 100 комнат — «не для гостей»
    */
   var selectGuestsChangeValidator = function () {
     switch (+inpRooms.value) {
@@ -123,40 +135,28 @@
         capacityOptions.forEach(function (elem) {
           elem.toggleAttribute('disabled', elem.value === '2' || elem.value === '3' || elem.value === '0');
         });
-        inpCapacity[2].setAttribute('selected', true);
-        // for (var i = 0; i < capacityOptions.length; i++) {
-        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '2' || capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
-        // }
+        inpCapacity[2].setAttribute('selected', 'selected');
         break;
       case 2:
         removeSelectedAttribute(capacityOptions);
         capacityOptions.forEach(function (elem) {
           elem.toggleAttribute('disabled', elem.value === '3' || elem.value === '0');
         });
-        inpCapacity[2].setAttribute('selected', true);
-        // for (i = 0; i < capacityOptions.length; i++) {
-        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
-        // }
+        inpCapacity[2].setAttribute('selected', 'selected');
         break;
       case 3:
         removeSelectedAttribute(capacityOptions);
         capacityOptions.forEach(function (elem) {
           elem.toggleAttribute('disabled', elem.value === '0');
         });
-        inpCapacity[2].setAttribute('selected', true);
-        // for (i = 0; i < capacityOptions.length; i++) {
-        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '0');
-        // }
+        inpCapacity[2].setAttribute('selected', 'selected');
         break;
       case 100:
         removeSelectedAttribute(capacityOptions);
         capacityOptions.forEach(function (elem) {
           elem.toggleAttribute('disabled', elem.value === '1' || elem.value === '2' || elem.value === '3');
         });
-        inpCapacity[3].setAttribute('selected', true);
-        // for (i = 0; i < capacityOptions.length; i++) {
-        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '1' || capacityOptions[i].value === '2' || capacityOptions[i].value === '3');
-        // }
+        inpCapacity[3].setAttribute('selected', 'selected');
         break;
     }
   };
@@ -241,12 +241,8 @@
    */
   var successUploadHandler = function (evt) {
     window.backend.upload(new FormData(adForm), function () {
-      adForm.reset();
-      inpPrice.placeholder = 0;
-      window.map.closeModalAd();
-      window.map.mainPin.style.top = MAIN_PIN_START_Y + 'px';
-      window.map.mainPin.style.left = MAIN_PIN_START_X + 'px';
-      setCoordinatePin();
+      deactiveState();
+      window.map.deletePins();
       window.util.successHandler();
     }, window.util.errorHandler);
     evt.preventDefault();

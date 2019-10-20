@@ -10,10 +10,9 @@
  * @return {Object} DOM элемент пина с координатами из свойств location
  */
   var createPinElem = function (obj) {
-    var similarAdTemplate = document
-      .querySelector('#pin')
-      .content.querySelector('.map__pin');
+    var similarAdTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var adElement = similarAdTemplate.cloneNode(true);
+
     adElement.style = 'left: ' + (obj.location.x - PIN_WIDTH / 2) + 'px; top: ' + (obj.location.y - PIN_HEIGHT) + 'px';
     adElement.querySelector('img').src = obj.author.avatar;
     adElement.querySelector('img').alt = obj.offer.title;
