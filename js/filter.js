@@ -8,7 +8,7 @@
   var housingGuestsSelector = mapFilters.querySelector('#housing-guests');
   var housingFeaturesField = mapFilters.querySelector('#housing-features');
   var filtersCheckboxes = mapFilters.querySelectorAll('input[type=checkbox]');
-  var filteredArr = [];
+  var filteredElems = [];
   var filterPrice = {
     LOW: 'low',
     MIDDLE: 'middle',
@@ -100,7 +100,7 @@
    */
   var onFilterChange = window.debounce(function () {
     var arr = window.dataLoad.slice();
-    filteredArr = arr.filter(housingTypeSort)
+    filteredElems = arr.filter(housingTypeSort)
     .filter(housingPriceSort)
     .filter(housingRoomsSort)
     .filter(housingGuestsSort)
@@ -108,7 +108,7 @@
 
     window.map.deletePins();
     window.map.closeModalAd();
-    window.map.renderPins(filteredArr);
+    window.map.renderPins(filteredElems);
   });
 
   mapFilters.addEventListener('change', onFilterChange);

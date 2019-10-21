@@ -55,6 +55,9 @@
     collSel.forEach(function (elem) {
       elem.removeAttribute('disabled', 'disabled');
     });
+    description.removeAttribute('disabled', 'disabled');
+    submitBtn.removeAttribute('disabled', 'disabled');
+    resetBtn.removeAttribute('disabled', 'disabled');
   };
 
   // стартовое значение пина
