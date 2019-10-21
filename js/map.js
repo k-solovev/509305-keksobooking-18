@@ -1,12 +1,12 @@
 'use strict';
 
 (function () {
-  var mapPins = document.querySelector('.map__pins');
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
+  var pinHandler = map.querySelector('.map__pin--main');
+  var mapPins = map.querySelector('.map__pins');
   var ENTER_KEY_CODE = 13;
   var ESC_KEY_CODE = 27;
-  var pinHandler = map.querySelector('.map__pin--main');
 
   /**
    * отрисовка не более 5 пинов на карте по заданному массиву
@@ -22,18 +22,6 @@
     }
 
     mapPins.appendChild(fragment);
-  };
-
-  /**
-   * удаление отрисованных пинов
-   */
-  var deletePins = function () {
-    var pin = window.map.map.querySelector('.map__pin[type=button]');
-
-    while (mapPins.contains(pin)) {
-      mapPins.removeChild(pin);
-      pin = window.map.map.querySelector('.map__pin[type=button]');
-    }
   };
 
   /**
@@ -70,6 +58,18 @@
       loadServerData();
     }
   });
+
+  /**
+   * удаление отрисованных пинов
+   */
+  var deletePins = function () {
+    var pin = window.map.map.querySelector('.map__pin[type=button]');
+
+    while (mapPins.contains(pin)) {
+      mapPins.removeChild(pin);
+      pin = window.map.map.querySelector('.map__pin[type=button]');
+    }
+  };
 
   /**
    * обработчик закрытия модалки объявления

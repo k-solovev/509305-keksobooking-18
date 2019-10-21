@@ -98,17 +98,18 @@
    * обработчик события изменения фильтров
    * копируем полученный с сервера массив, фильтруем его, удаляем пины, отрисовываем по отфильтрованному массиву
    */
-  var onFilterChange = function () {
+  var onFilterChange = window.debounce(function () {
     var arr = window.dataLoad.slice();
     filteredElems = arr.filter(housingTypeSort)
     .filter(housingPriceSort)
     .filter(housingRoomsSort)
     .filter(housingGuestsSort)
     .filter(housingFeaturesSort);
+
     window.map.deletePins();
     window.map.closeModalAd();
     window.map.renderPins(filteredElems);
-  };
+  });
 
   mapFilters.addEventListener('change', onFilterChange);
 
@@ -126,8 +127,6 @@
       }
     });
   };
-
-  mapFilters.addEventListener('change', onFilterChange);
 
   window.filter = {
     filterReset: filterReset

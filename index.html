@@ -181,7 +181,9 @@
               <input type="file" id="images" name="images" class="ad-form__input visually-hidden">
               <label for="images" class="ad-form__drop-zone">Загрузите или&nbsp;перетащите сюда фото</label>
             </div>
-            <div class="ad-form__photo"></div>
+            <div class="ad-form__photo">
+              <img class="visually-hidden" alt="Картинка жилья" width="70" height="70">
+            </div>
           </div>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--submit">
@@ -254,13 +256,14 @@
   </template>
 
   <script src="js/util.js"></script>
+  <script src="js/debounce.js"></script>
+  <script src="js/input-files.js"></script>
   <script src="js/backend.js"></script>
   <script src="js/data.js"></script>
   <script src="js/pin.js"></script>
   <script src="js/card.js"></script>
   <script src="js/map.js"></script>
-  <script src="js/form.js"></script>
   <script src="js/filter.js"></script>
-  <script src="js/debounce.js"></script>
+  <script src="js/form.js"></script>
 </body>
 </html>
