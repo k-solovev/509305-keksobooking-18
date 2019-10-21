@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var mapPins = document.querySelector('.map__pins');
   var map = document.querySelector('.map');
   var mainPin = map.querySelector('.map__pin--main');
   var ENTER_KEY_CODE = 13;
@@ -13,7 +14,6 @@
    */
   var renderPins = function (data) {
     var MAX_PINS_COUNT = 5;
-    var mapPins = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
     var pinsCount = (data.length > MAX_PINS_COUNT) ? MAX_PINS_COUNT : data.length;
 
@@ -25,19 +25,24 @@
   };
 
   /**
+   * удаление отрисованных пинов
+   */
+  var deletePins = function () {
+    var pin = window.map.map.querySelector('.map__pin[type=button]');
+
+    while (mapPins.contains(pin)) {
+      mapPins.removeChild(pin);
+      pin = window.map.map.querySelector('.map__pin[type=button]');
+    }
+  };
+
+  /**
    * обработчик успеха для загрузки данных с сервера
    * @param {*} data - загруженные данные с сервера
    */
   var successLoadHandler = function (data) {
     window.dataLoad = data;
     renderPins(data);
-    // var fragment = document.createDocumentFragment();
-
-    // for (var i = 0; i < PINS_COUNT; i++) {
-    //   fragment.appendChild(window.pin.createPinElem(data[i]));
-    // }
-
-    // mapPins.appendChild(fragment);
   };
 
   /**
@@ -156,6 +161,7 @@
     loadServerData: loadServerData,
     closeModalAd: closeModalAd,
     ESC_KEY_CODE: ESC_KEY_CODE,
-    renderPins: renderPins
+    renderPins: renderPins,
+    deletePins: deletePins
   };
 })();

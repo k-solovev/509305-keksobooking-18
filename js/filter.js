@@ -7,8 +7,8 @@
   var housingRoomsSelector = mapFilters.querySelector('#housing-rooms');
   var housingGuestsSelector = mapFilters.querySelector('#housing-guests');
   var housingFeaturesField = mapFilters.querySelector('#housing-features');
-  var filteredArr = [];
-  var mapPins = window.map.map.querySelector('.map__pins');
+  var filtersCheckboxes = mapFilters.querySelectorAll('input[type=checkbox]');
+  var filteredElems = [];
   var filterPrice = {
     LOW: 'low',
     MIDDLE: 'middle',
@@ -31,18 +31,6 @@
       }
     }
     return true;
-  };
-
-  /**
-   * удаление отрисованных пинов
-   */
-  var deletePins = function () {
-    var pin = window.map.map.querySelector('.map__pin[type=button]');
-
-    while (mapPins.contains(pin)) {
-      mapPins.removeChild(pin);
-      pin = window.map.map.querySelector('.map__pin[type=button]');
-    }
   };
 
   /**
@@ -112,15 +100,36 @@
    */
   var onFilterChange = function () {
     var arr = window.dataLoad.slice();
-    filteredArr = arr.filter(housingTypeSort)
+    filteredElems = arr.filter(housingTypeSort)
     .filter(housingPriceSort)
     .filter(housingRoomsSort)
     .filter(housingGuestsSort)
     .filter(housingFeaturesSort);
-
-    deletePins();
-    window.debounce(window.map.renderPins(filteredArr));
+    window.map.deletePins();
+    window.map.closeModalAd();
+    window.map.renderPins(filteredElems);
   };
 
   mapFilters.addEventListener('change', onFilterChange);
+
+  /**
+   * сброс фильтров
+   */
+  var filterReset = function () {
+    housingTypeSelector.value = 'any';
+    housingPriceSelector.value = 'any';
+    housingRoomsSelector.value = 'any';
+    housingGuestsSelector.value = 'any';
+    filtersCheckboxes.forEach(function (elem) {
+      if (elem.checked === true) {
+        elem.checked = false;
+      }
+    });
+  };
+
+  mapFilters.addEventListener('change', onFilterChange);
+
+  window.filter = {
+    filterReset: filterReset
+  };
 })();

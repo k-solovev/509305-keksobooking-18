@@ -30,12 +30,6 @@
     collSel.forEach(function (elem) {
       elem.setAttribute('disabled', 'disabled');
     });
-    // for (var i = 0; i < collInp.length; i++) {
-    //   collInp[i].setAttribute('disabled', 'disabled');
-    // }
-    // for (i = 0; i < collSel.length; i++) {
-    //   collSel[i].setAttribute('disabled', 'disabled');
-    // }
   };
 
   addDisabled(inputs, selects);
@@ -52,13 +46,6 @@
     collSel.forEach(function (elem) {
       elem.removeAttribute('disabled', 'disabled');
     });
-    // for (var i = 0; i < collInp.length; i++) {
-    //   collInp[i].removeAttribute('disabled', 'disabled');
-    // }
-    // for (i = 0; i < collSel.length; i++) {
-    //   collSel[i].removeAttribute('disabled', 'disabled');
-    // }
-  };
 
   /**
    * функция обработчик для активации состояний полей форм
@@ -67,6 +54,9 @@
     removeDisabled(inputs, selects);
     window.map.map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
+    description.removeAttribute('disabled', 'disabled');
+    submitBtn.removeAttribute('disabled', 'disabled');
+    resetBtn.removeAttribute('disabled', 'disabled');
   };
 
   // стартовое значение пина
@@ -119,9 +109,6 @@
           elem.toggleAttribute('disabled', elem.value === '2' || elem.value === '3' || elem.value === '0');
         });
         inpCapacity[2].setAttribute('selected', true);
-        // for (var i = 0; i < capacityOptions.length; i++) {
-        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '2' || capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
-        // }
         break;
       case 2:
         removeSelectedAttribute(capacityOptions);
@@ -129,9 +116,6 @@
           elem.toggleAttribute('disabled', elem.value === '3' || elem.value === '0');
         });
         inpCapacity[2].setAttribute('selected', true);
-        // for (i = 0; i < capacityOptions.length; i++) {
-        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '3' || capacityOptions[i].value === '0');
-        // }
         break;
       case 3:
         removeSelectedAttribute(capacityOptions);
@@ -139,9 +123,6 @@
           elem.toggleAttribute('disabled', elem.value === '0');
         });
         inpCapacity[2].setAttribute('selected', true);
-        // for (i = 0; i < capacityOptions.length; i++) {
-        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '0');
-        // }
         break;
       case 100:
         removeSelectedAttribute(capacityOptions);
@@ -149,9 +130,6 @@
           elem.toggleAttribute('disabled', elem.value === '1' || elem.value === '2' || elem.value === '3');
         });
         inpCapacity[3].setAttribute('selected', true);
-        // for (i = 0; i < capacityOptions.length; i++) {
-        //   capacityOptions[i].toggleAttribute('disabled', capacityOptions[i].value === '1' || capacityOptions[i].value === '2' || capacityOptions[i].value === '3');
-        // }
         break;
     }
   };
